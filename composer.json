@@ -2,6 +2,7 @@
     "name": "uploadcare/uploadcare-php",
     "description": "Uploadcare API binding for PHP",
     "license": "MIT",
+    "type": "library",
     "authors": [
         {
             "name": "Uploadcare",
