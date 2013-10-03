@@ -1,6 +1,7 @@
 {
     "name": "uploadcare/uploadcare-php",
     "description": "Uploadcare API binding for PHP",
+    "type": "library",
     "require": {
         "php": ">=5.3.0"
     },
