@@ -14,7 +14,7 @@ define('REQUEST_TYPE_OPTIONS', 'options');
 
 define('UC_PARAM_FILE_ID', 'file_id');
 
-require_once dirname(__FILE__).'/Api.php';
+require_once dirname(__FILE__) . '/Api.php';
 require_once dirname(__FILE__).'/File.php';
-require_once dirname(__FILE__).'/Widget.php';
-require_once dirname(__FILE__).'/Uploader.php';
+require_once dirname(__FILE__) . '/Widget.php';
+require_once dirname(__FILE__) . '/Uploader.php';
