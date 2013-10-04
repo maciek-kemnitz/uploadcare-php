@@ -52,6 +52,19 @@ class Api
    */
   public $api_version = '0.3';
 
+  const API_TYPE_RAW = 'raw';
+  const API_TYPE_ACCOUNT = 'account';
+  const API_TYPE_FILES = 'files';
+  const API_TYPE_FILE = 'file';
+  const API_TYPE_STORE = 'store';
+  const REQUEST_TYPE_POST = 'post';
+  const REQUEST_TYPE_PUT = 'put';
+  const REQUEST_TYPE_DELETE = 'delete';
+  const REQUEST_TYPE_GET = 'get';
+  const REQUEST_TYPE_HEAD = 'head';
+  const REQUEST_TYPE_OPTIONS = 'options';
+  const UC_PARAM_FILE_ID = 'file_id';
+
   /**
    * Constructor
    *
@@ -85,7 +98,7 @@ class Api
    */
   public function getFileList($page = 1)
   {
-    $data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
+    $data = $this->__preparedRequest(Api::API_TYPE_FILES, Api::REQUEST_TYPE_GET, array('page' => $page));
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
@@ -102,7 +115,7 @@ class Api
    */
   public function getFilePaginationInfo($page = 1)
   {
-    $data = (array)$this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
+    $data = (array)$this->__preparedRequest(Api::API_TYPE_FILES, Api::REQUEST_TYPE_GET, array('page' => $page));
     unset($data['results']);
     return $data;
   }
@@ -127,7 +140,7 @@ class Api
       throw new \Exception(curl_error($ch));
     }    
     $ch_info = curl_getinfo($ch);
-    if ($method == REQUEST_TYPE_DELETE) {
+    if ($method == Api::REQUEST_TYPE_DELETE) {
       if ($ch_info['http_code'] != 302) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
@@ -154,7 +167,7 @@ class Api
    * @throws Exception
    * @return array
    */
-  public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array())
+  public function __preparedRequest($type, $request_type = Api::REQUEST_TYPE_GET, $params = array())
   {
     $url = $this->__getUrl($type, $params);
 
@@ -164,7 +177,7 @@ class Api
 
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
-    if ($request_type == REQUEST_TYPE_DELETE && $type == API_TYPE_STORE) {
+    if ($request_type == Api::REQUEST_TYPE_DELETE && $type == Api::API_TYPE_STORE) {
       if ($ch_info['http_code'] != 302) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
@@ -205,19 +218,19 @@ class Api
   private function __getUrl($type, $params = array())
   {
     switch ($type) {
-      case API_TYPE_RAW:
+      case Api::API_TYPE_RAW:
         return sprintf('https://%s/', $this->api_host);
-      case API_TYPE_ACCOUNT:
+      case Api::API_TYPE_ACCOUNT:
         return sprintf('https://%s/account/', $this->api_host);
-      case API_TYPE_FILES:
+      case Api::API_TYPE_FILES:
         return sprintf('https://%s/files/?page=%s', $this->api_host, $params['page']);
-      case API_TYPE_STORE:
-        if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
+      case Api::API_TYPE_STORE:
+        if (array_key_exists(Api::UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
         return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
-      case API_TYPE_FILE:
-        if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
+      case Api::API_TYPE_FILE:
+        if (array_key_exists(Api::UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
         return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
@@ -235,29 +248,29 @@ class Api
    * @throws Exception
    * @return void
    */
-  private function __setRequestType($ch, $type = REQUEST_TYPE_GET)
+  private function __setRequestType($ch, $type = Api::REQUEST_TYPE_GET)
   {
     switch ($type) {
-      case REQUEST_TYPE_GET:
+      case Api::REQUEST_TYPE_GET:
       case 'GET':
         break;
-      case REQUEST_TYPE_POST:
+      case Api::REQUEST_TYPE_POST:
       case 'POST':
         curl_setopt($ch, CURLOPT_POST, true);
         break;
-      case REQUEST_TYPE_PUT:
+      case Api::REQUEST_TYPE_PUT:
       case 'PUT':
         curl_setopt($ch, CURLOPT_PUT, true);
         break;
-      case REQUEST_TYPE_DELETE:
+      case Api::REQUEST_TYPE_DELETE:
       case 'DELETE':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         break;
-      case REQUEST_TYPE_HEAD:
+      case Api::REQUEST_TYPE_HEAD:
       case 'HEAD':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
         break;
-      case REQUEST_TYPE_OPTIONS:
+      case Api::REQUEST_TYPE_OPTIONS:
       case 'OPTIONS':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
         break;
