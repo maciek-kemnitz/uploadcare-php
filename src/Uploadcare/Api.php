@@ -102,7 +102,7 @@ class Api
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new File($file_raw->file_id, $this);
+      $result[] = new File($file_raw->uuid, $this);
     }
     return $result;
   }
